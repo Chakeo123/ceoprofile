@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -288,6 +289,38 @@
       font-weight: 600;
       color: #555;
     }
+
+    /* ── Locked sections (hidden until verified) ── */
+    .locked-section { display: none; }
+    .locked-section.revealed {
+      display: block;
+      animation: fadeSlideIn 0.45s ease forwards;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Verify gate ── */
+    .verify-gate {
+      background: white;
+      border-radius: 16px;
+      padding: 22px 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .verify-gate-lock {
+      width: 46px; height: 46px;
+      background: var(--brand-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .verify-gate-text {
+      font-size: 13px; color: #666; text-align: center; line-height: 1.6;
+    }
   </style>
 </head>
 <body class="lang-ja">
@@ -347,8 +380,27 @@
       </div>
     </div>
 
+    <!-- ── Verify Gate ── -->
+    <div class="section" id="verify-gate-section">
+      <div class="verify-gate">
+        <div class="verify-gate-lock">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#028DAE"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        </div>
+        <div class="verify-gate-text">
+          <span data-lang-inline="ja">SNS・連絡先を表示するには確認してください</span>
+          <span data-lang-inline="en">Verify to view SNS & contact info</span>
+        </div>
+        <div class="cf-turnstile"
+          data-sitekey="0x4AAAAAACyh1AnZS0zbiLwH"
+          data-callback="onTurnstileSuccess"
+          data-theme="light"
+          data-language="auto">
+        </div>
+      </div>
+    </div>
+
     <!-- ── SNS ── -->
-    <div class="section">
+    <div class="section locked-section" id="sns-section">
       <div class="section-label">SNS</div>
       <div class="sns-grid">
 
@@ -428,7 +480,7 @@
     </div>
 
     <!-- ── Contact ── -->
-    <div class="section">
+    <div class="section locked-section" id="contact-section">
       <div class="section-label">
         <span data-lang-inline="ja">メールアドレス</span>
         <span data-lang-inline="en">Email</span>
@@ -631,6 +683,23 @@
       document.body.className = 'lang-' + lang;
       document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+    }
+
+    function revealSections() {
+      document.getElementById('verify-gate-section').style.display = 'none';
+      document.querySelectorAll('.locked-section').forEach(function(el) {
+        el.classList.add('revealed');
+      });
+    }
+
+    function onTurnstileSuccess(token) {
+      sessionStorage.setItem('human_verified', '1');
+      revealSections();
+    }
+
+    // セッション中にすでに認証済みならゲートをスキップ
+    if (sessionStorage.getItem('human_verified')) {
+      document.addEventListener('DOMContentLoaded', revealSections);
     }
   </script>
 </body>
