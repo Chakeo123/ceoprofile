@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funakoshi Takehiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root { --brand: #028DAE; --brand-light: rgba(2,141,174,0.1); }
+
+    body {
+      font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      /* Modern white grid */
+      background-color: #f7fafb;
+      background-image:
+        linear-gradient(rgba(2,141,174,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(2,141,174,0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      min-height: 100vh;
+      color: #1a1a2e;
+    }
+
+    /* ── Language toggle ── */
+    body.lang-en [data-lang="ja"],
+    body.lang-en [data-lang-inline="ja"] { display: none !important; }
+    body.lang-ja [data-lang="en"],
+    body.lang-ja [data-lang-inline="en"] { display: none !important; }
+
+    .lang-toggle {
+      position: fixed;
+      top: 14px; right: 14px;
+      z-index: 100;
+      background: white;
+      border-radius: 24px;
+      padding: 4px;
+      display: flex;
+      gap: 2px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+    .lang-btn {
+      padding: 5px 14px;
+      border: none;
+      background: transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      color: #999;
+    }
+    .lang-btn.active {
+      background: var(--brand);
+      color: white;
+      box-shadow: 0 1px 6px rgba(2,141,174,0.35);
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 72px 16px 48px;
+    }
+
+    /* ── Profile ── */
+    .profile {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand) 0%, #015f78 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -1px;
+      box-shadow: 0 6px 28px rgba(2,141,174,0.35);
+      overflow: hidden;
+    }
+    .avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .profile-name { margin-bottom: 4px; }
+    .profile-name-main {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      color: #0f1e27;
+    }
+    .profile-name-reading {
+      font-size: 13px;
+      font-weight: 400;
+      color: #999;
+      margin-top: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Affiliations ── */
+    .affiliations {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .affil-card {
+      background: white;
+      border-radius: 12px;
+      padding: 13px 18px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      text-align: left;
+      border-left: 3px solid var(--brand);
+    }
+    .affil-org {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a2e;
+      line-height: 1.45;
+      margin-bottom: 3px;
+    }
+    .affil-role {
+      font-size: 12px;
+      color: #777;
+      line-height: 1.4;
+    }
+
+    /* ── Section ── */
+    .section { margin-bottom: 16px; }
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+
+    /* ── Link card ── */
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      border-radius: 14px;
+      padding: 13px 16px;
+      margin-bottom: 7px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .link-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.11); }
+    .link-card:active { transform: translateY(0); }
+
+    .link-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .link-icon-logo {
+      width: 72px; height: 40px;
+      border-radius: 10px;
+      background: #f0fafb;
+      border: 1px solid #d9eff4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 5px 8px;
+    }
+    .link-icon-logo img {
+      height: 26px;
+      width: auto;
+      object-fit: contain;
+    }
+    .link-text { flex: 1; min-width: 0; }
+    .link-meta { font-size: 11px; color: #aaa; margin-bottom: 2px; }
+    .link-main {
+      font-size: 14px;
+      font-weight: 500;
+      color: #222;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .link-chevron { color: #ccc; font-size: 20px; flex-shrink: 0; line-height: 1; }
+
+    /* ── Info card ── */
+    .info-card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      margin-bottom: 16px;
+    }
+    .info-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 14px;
+    }
+
+    /* ── Award row ── */
+    .award-row {
+      display: flex;
+      gap: 14px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .award-row:first-child { padding-top: 0; }
+    .award-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .award-year { font-size: 13px; font-weight: 700; color: var(--brand); min-width: 32px; padding-top: 1px; }
+    .award-desc { font-size: 13px; color: #444; line-height: 1.55; }
+
+    /* ── Timeline ── */
+    .sub-heading {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin: 16px 0 8px;
+    }
+    .sub-heading:first-child { margin-top: 0; }
+    .tl-row {
+      display: flex;
+      gap: 14px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .tl-row:first-child { padding-top: 0; }
+    .tl-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .tl-date { font-size: 11px; color: #aaa; min-width: 60px; padding-top: 2px; line-height: 1.5; }
+    .tl-body { font-size: 13px; color: #333; line-height: 1.65; }
+    .tl-body strong { display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 2px; }
+    .tl-note { font-size: 12px; color: var(--brand); font-weight: 500; margin-top: 2px; }
+    .tl-sub { font-size: 12px; color: #888; margin-top: 3px; }
+
+    footer { text-align: center; font-size: 11px; color: #ccc; padding: 8px 0 24px; }
+
+    /* ── SNS Icon Grid ── */
+    .sns-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .sns-icon-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      background: white;
+      border-radius: 14px;
+      padding: 14px 8px 12px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sns-icon-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.11); }
+    .sns-icon-card:active { transform: translateY(0); }
+    .sns-icon-wrap {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sns-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+    }
+  </style>
+</head>
+<body class="lang-ja">
+
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang(this,'ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang(this,'en')">English</button>
+  </div>
+
+  <div class="container">
+
+    <!-- ── Profile ── -->
+    <div class="profile">
+      <div class="avatar">
+        <img src="profile.png" alt="Funakoshi Takehiro" onerror="this.style.display='none';this.parentNode.innerHTML='TF';">
+      </div>
+      <div class="profile-name">
+        <div class="profile-name-main">
+          <span data-lang-inline="ja">船越 丈寛</span>
+          <span data-lang-inline="en">Funakoshi Takehiro</span>
+        </div>
+        <div class="profile-name-reading" data-lang-inline="ja">Funakoshi Takehiro</div>
+      </div>
+
+      <div class="affiliations">
+        <div class="affil-card">
+          <div class="affil-org">
+            <span data-lang-inline="ja">米国コロラド大学 工学・応用科学部</span>
+            <span data-lang-inline="en">University of Colorado Boulder</span>
+          </div>
+          <div class="affil-role">
+            <span data-lang-inline="ja">コンピュータサイエンス専攻 修士課程</span>
+            <span data-lang-inline="en">College of Engineering &amp; Applied Science — M.S. CS</span>
+          </div>
+        </div>
+        <div class="affil-card">
+          <div class="affil-org">
+            <span data-lang-inline="ja">東京大学大学院 松尾・岩澤研究室</span>
+            <span data-lang-inline="en">The University of Tokyo — Matsuo &amp; Iwasawa Lab</span>
+          </div>
+          <div class="affil-role">
+            <span data-lang-inline="ja">TA（ティーチング・アシスタント）</span>
+            <span data-lang-inline="en">TA (Teaching Assistant)</span>
+          </div>
+        </div>
+        <div class="affil-card">
+          <div class="affil-org">
+            <span data-lang-inline="ja">pAIr Mind, Inc.（株式会社ペアマインド）</span>
+            <span data-lang-inline="en">pAIr Mind, Inc.</span>
+          </div>
+          <div class="affil-role">
+            <span data-lang-inline="ja">代表取締役 CEO &amp; Founder</span>
+            <span data-lang-inline="en">CEO &amp; Founder</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SNS ── -->
+    <div class="section">
+      <div class="section-label">SNS</div>
+      <div class="sns-grid">
+
+        <a href="https://www.linkedin.com/in/takehiro-funakoshi" target="_blank" rel="noopener" class="sns-icon-card">
+          <div class="sns-icon-wrap" style="background:#e8f1fb;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#0077b5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </div>
+          <div class="sns-name">LinkedIn</div>
+        </a>
+
+        <a href="https://www.facebook.com/profile.php?id=100079250199453" target="_blank" rel="noopener" class="sns-icon-card">
+          <div class="sns-icon-wrap" style="background:#e8f0fe;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          <div class="sns-name">Facebook</div>
+        </a>
+
+        <a href="https://www.instagram.com/funakoshi_takehiro/" target="_blank" rel="noopener" class="sns-icon-card">
+          <div class="sns-icon-wrap" style="background:#fdf0f8;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="url(#ig-grad)">
+              <defs>
+                <linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#f09433"/>
+                  <stop offset="25%" style="stop-color:#e6683c"/>
+                  <stop offset="50%" style="stop-color:#dc2743"/>
+                  <stop offset="75%" style="stop-color:#cc2366"/>
+                  <stop offset="100%" style="stop-color:#bc1888"/>
+                </linearGradient>
+              </defs>
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+          </div>
+          <div class="sns-name">Instagram</div>
+        </a>
+
+        <a href="https://line.me/ti/p/NVANeTM2q-" target="_blank" rel="noopener" class="sns-icon-card">
+          <div class="sns-icon-wrap" style="background:#e6f9ec;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#06C755"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+          </div>
+          <div class="sns-name">LINE</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Company Website ── -->
+    <div class="section">
+      <div class="section-label">
+        <span data-lang-inline="ja">会社公式WEBサイト</span>
+        <span data-lang-inline="en">Official Company Website</span>
+      </div>
+
+      <a href="https://pairmind.co.jp" target="_blank" rel="noopener" class="link-card">
+        <div class="link-icon-logo">
+          <img src="pAIr_Mind_logo.png" alt="pAIr Mind">
+        </div>
+        <div class="link-text">
+          <div class="link-meta">pAIr Mind, Inc.</div>
+          <div class="link-main">https://pairmind.co.jp</div>
+        </div>
+        <div class="link-chevron">›</div>
+      </a>
+    </div>
+
+    <!-- ── Contact ── -->
+    <div class="section">
+      <div class="section-label">
+        <span data-lang-inline="ja">連絡先</span>
+        <span data-lang-inline="en">Contact</span>
+      </div>
+
+      <a href="mailto:funakoshi@pairmind.co.jp" class="link-card">
+        <div class="link-icon" style="background:#e6f6fa;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#028DAE"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-meta">
+            <span data-lang-inline="ja">メール（会社）</span>
+            <span data-lang-inline="en">Email — pAIr Mind</span>
+          </div>
+          <div class="link-main">funakoshi@pairmind.co.jp</div>
+        </div>
+      </a>
+
+      <a href="mailto:takehiro.funakoshi@weblab.t.u-tokyo.ac.jp" class="link-card">
+        <div class="link-icon" style="background:#e6f6fa;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#028DAE"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-meta">
+            <span data-lang-inline="ja">メール（東京大学）</span>
+            <span data-lang-inline="en">Email — UTokyo</span>
+          </div>
+          <div class="link-main">takehiro.funakoshi@weblab.t.u-tokyo.ac.jp</div>
+        </div>
+      </a>
+
+      <a href="mailto:Takehiro.Funakoshi@colorado.edu" class="link-card">
+        <div class="link-icon" style="background:#e6f6fa;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#028DAE"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-meta">
+            <span data-lang-inline="ja">メール（コロラド大学）</span>
+            <span data-lang-inline="en">Email — Univ. of Colorado</span>
+          </div>
+          <div class="link-main">Takehiro.Funakoshi@colorado.edu</div>
+        </div>
+      </a>
+
+      <a href="tel:+819069195275" class="link-card">
+        <div class="link-icon" style="background:#fef9ec;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-meta">
+            <span data-lang-inline="ja">電話</span>
+            <span data-lang-inline="en">Phone</span>
+          </div>
+          <div class="link-main">+81 090-6919-5275</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- ── Education & Career ── -->
+    <div class="section">
+      <div class="section-label">
+        <span data-lang-inline="ja">学歴・職歴</span>
+        <span data-lang-inline="en">Education &amp; Career</span>
+      </div>
+      <div class="info-card">
+
+        <!-- Japanese -->
+        <div data-lang="ja">
+          <div class="sub-heading">学　歴</div>
+          <div class="tl-row">
+            <div class="tl-date">2025.9〜</div>
+            <div class="tl-body">
+              <strong>米国コロラド大学 工学・応用科学部</strong>
+              コンピュータサイエンス専攻 修士課程
+              <div class="tl-note">GPA 4.0 / 4.0（2027年８月 卒業見込み）</div>
+            </div>
+          </div>
+          <div class="tl-row">
+            <div class="tl-date">2021.4〜<br>2025.3</div>
+            <div class="tl-body">
+              <strong>兵庫県立大学 社会情報科学部 卒業</strong>
+              <div class="tl-note">最優秀活動賞（全学２名）</div>
+            </div>
+          </div>
+          <div class="tl-row" style="border-bottom:none;">
+            <div class="tl-date">2018.4〜<br>2021.3</div>
+            <div class="tl-body">
+              <strong>滝川高等学校 卒業</strong>
+              <div class="tl-note">学業奨励賞（全学４名）</div>
+            </div>
+          </div>
+
+          <div class="sub-heading">職　歴</div>
+          <div class="tl-row">
+            <div class="tl-date">2025〜</div>
+            <div class="tl-body">
+              <strong>pAIr Mind, Inc.（株式会社ペアマインド）</strong>
+              創業・代表取締役
+            </div>
+          </div>
+          <div class="tl-row" style="border-bottom:none;">
+            <div class="tl-date">2025〜</div>
+            <div class="tl-body">
+              <strong>東京大学大学院　松尾・岩澤研究室</strong>
+              TA（ティーチング・アシスタント）
+            </div>
+          </div>
+        </div>
+
+        <!-- English -->
+        <div data-lang="en">
+          <div class="sub-heading">Education</div>
+          <div class="tl-row">
+            <div class="tl-date">Sep 2025–</div>
+            <div class="tl-body">
+              <strong>M.S. Computer Science</strong>
+              University of Colorado Boulder, College of Engineering &amp; Applied Science
+              <div class="tl-note">GPA 4.0 / 4.0 (Expected Aug. 2027)</div>
+            </div>
+          </div>
+          <div class="tl-row">
+            <div class="tl-date">Apr 2021–<br>Mar 2025</div>
+            <div class="tl-body">
+              <strong>B.S. Social Information Science</strong>
+              University of Hyogo
+              <div class="tl-note">Most Outstanding Activity Award (top 2 in university)</div>
+            </div>
+          </div>
+          <div class="tl-row" style="border-bottom:none;">
+            <div class="tl-date">Apr 2018–<br>Mar 2021</div>
+            <div class="tl-body">
+              <strong>Takigawa High School</strong>
+              <div class="tl-note">Academic Excellence Award (top 4 in school)</div>
+            </div>
+          </div>
+
+          <div class="sub-heading">Career</div>
+          <div class="tl-row">
+            <div class="tl-date">2025–</div>
+            <div class="tl-body">
+              <strong>CEO &amp; Founder</strong>
+              pAIr Mind, Inc. (University Spin-off)
+            </div>
+          </div>
+          <div class="tl-row" style="border-bottom:none;">
+            <div class="tl-date">2025–</div>
+            <div class="tl-body">
+              <strong>TA (Teaching Assistant)</strong>
+              Matsuo &amp; Iwasawa Lab, Graduate School of Engineering, The University of Tokyo
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Awards ── -->
+    <div class="section">
+      <div class="section-label">
+        <span data-lang-inline="ja">受賞歴</span>
+        <span data-lang-inline="en">Awards &amp; Recognition</span>
+      </div>
+      <div class="info-card">
+
+        <div data-lang="ja">
+          <div class="award-row"><div class="award-year">2026</div><div class="award-desc">国際科学オリンピック 日本AIオリンピック 入賞</div></div>
+          <div class="award-row"><div class="award-year">2025</div><div class="award-desc">大阪・関西万博インキュベーションコンテスト 銅賞</div></div>
+          <div class="award-row"><div class="award-year">2025</div><div class="award-desc">日本イノベーションアワード ノミネート</div></div>
+          <div class="award-row"><div class="award-year">2024</div><div class="award-desc">神戸市AIスタートアップ創出事業「SET SAIL 2024」採択</div></div>
+          <div class="award-row"><div class="award-year">2020</div><div class="award-desc">兵庫県総合体育大会 アーチェリー男子個人 優勝</div></div>
+        </div>
+
+        <div data-lang="en">
+          <div class="award-row"><div class="award-year">2026</div><div class="award-desc">Prize Winner — Japan AI Olympiad (International Science Olympiad)</div></div>
+          <div class="award-row"><div class="award-year">2025</div><div class="award-desc">Bronze Prize — Osaka–Kansai Expo Incubation Contest</div></div>
+          <div class="award-row"><div class="award-year">2025</div><div class="award-desc">Nominee — Japan Innovation Award</div></div>
+          <div class="award-row"><div class="award-year">2024</div><div class="award-desc">Selected — Kobe City AI Startup Creation Program "SET SAIL 2024"</div></div>
+          <div class="award-row"><div class="award-year">2020</div><div class="award-desc">1st Place — Hyogo Prefecture General Athletic Meet, Archery (Men's Individual)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Media ── -->
+    <div class="section">
+      <div class="section-label">
+        <span data-lang-inline="ja">メディア実績</span>
+        <span data-lang-inline="en">Media Coverage</span>
+      </div>
+
+      <a href="https://pairmind.co.jp/newscategory/media" target="_blank" rel="noopener" class="link-card">
+        <div class="link-icon" style="background:#fef3e2;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b"><path d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H4V5h16v14zM6 7h12v2H6zm0 4h12v2H6zm0 4h8v2H6z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-meta">
+            <span data-lang-inline="ja">テレビ・新聞・インターネットメディア等</span>
+            <span data-lang-inline="en">TV · Newspapers · Online Media</span>
+          </div>
+          <div class="link-main">
+            <span data-lang-inline="ja">メディア実績一覧</span>
+            <span data-lang-inline="en">Media Coverage List</span>
+          </div>
+        </div>
+        <div class="link-chevron">›</div>
+      </a>
+    </div>
+
+    <footer>© 2026 Funakoshi Takehiro</footer>
+  </div>
+
+  <script>
+    function setLang(btn, lang) {
+      document.body.className = 'lang-' + lang;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
